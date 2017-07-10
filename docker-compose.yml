@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+    web:
+        container_name: laravel_web
+        image: nginx
+        ports:
+            - "80:80"
+        volumes:
+            - .:/usr/share/nginx/html:ro
+            - ./default.conf:/etc/nginx/conf.d/default.conf:ro
+        links:
+            - php
+    php:
+        container_name: laravel_php
+        image: wskc/docker-php7-laravel
+        volumes:
+            - .:/usr/share/nginx/html:ro
+            - ./storage:/usr/share/nginx/html/storage:rw
+            - ./bootstrap/cache:/usr/share/nginx/html/bootstrap/cache:rw
+        links:
+            - db
+    db:
+        container_name: laravel_db
+        image: mariadb
+        volumes:
+            - ./db:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: 'justice'
+            MYSQL_USER: 'laravel'
+            MYSQL_PASSWORD: 'laravel'
+            MYSQL_DATABASE: 'laravel'
